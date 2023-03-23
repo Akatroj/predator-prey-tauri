@@ -5,6 +5,7 @@
     "ms-python.python",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "clinyong.vscode-css-modules"
+    "clinyong.vscode-css-modules",
+    "naumovs.color-highlight"
   ]
 }
