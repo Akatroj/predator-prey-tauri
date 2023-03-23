@@ -1,22 +1,20 @@
 use pyo3::{prelude::*, types::PyModule};
 
-pub fn dupa() -> String {
-    let code = include_str!("../../src-python/src/main.py");
+const PYTHON_CODE: &'static str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/src-python/src/main.py"
+));
 
-    let optional: PyResult<String> = Python::with_gil(|py| {
-        let test = PyModule::from_code(py, code, "simulation.py", "simulation")?;
+pub fn dupa() -> String {
+    Python::with_gil(|py| {
+        let test = PyModule::from_code(py, PYTHON_CODE, "simulation.py", "simulation")?;
+        // TODO: import the module by adding the path to 'os'
         let result: &str = test.getattr("main")?.call0()?.extract()?;
 
         // println!("{}", result);
 
         Ok(result.to_owned())
-    });
-
-    return match optional {
-        Err(e) => {
-            println!("{:?}", e);
-            "dupa".to_owned()
-        }
-        Ok(x) => x,
-    };
+    })
+    .unwrap()
+    .to_owned()
 }

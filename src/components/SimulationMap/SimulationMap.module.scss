@@ -1,6 +1,9 @@
 .container {
-  flex: 1;
+  // flex: 1;
+  width: 50vmax;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  aspect-ratio: 1;
 }
