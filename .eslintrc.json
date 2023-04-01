@@ -11,6 +11,8 @@
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:react-hooks/recommended",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
@@ -19,7 +21,9 @@
       "jsx": true
     },
     "ecmaVersion": 13,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": true,
+    "tsconfigRootDir": "."
   },
   "plugins": ["react", "@typescript-eslint", "import", "unused-imports", "simple-import-sort"],
   "rules": {

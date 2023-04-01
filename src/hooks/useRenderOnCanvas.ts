@@ -1,4 +1,4 @@
-import type { RefObject} from 'react';
+import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
 import type { SimulationMap } from '@/types';
@@ -26,7 +26,7 @@ export function useRenderOnCanvas(
     return () => {
       parent.removeChild(app.view);
     };
-  }, [app, parent]);
+  }, [parent]);
 
   // @ts-expect-error TODO:
   useResizeListeners(parent, mapSize, { app, viewport, spriteArr });
@@ -41,7 +41,7 @@ export function useRenderOnCanvas(
     return () => {
       viewport.off('zoomed-end', callback);
     };
-  }, [viewport, app]);
+  }, []);
 
   useEffect(() => {
     const callback = () => {
@@ -54,5 +54,5 @@ export function useRenderOnCanvas(
     return () => {
       app.ticker?.remove(callback);
     };
-  }, [app]);
+  }, [mapRef, spriteArrRef]);
 }

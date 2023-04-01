@@ -30,7 +30,7 @@ export function useSprites({ mapSize }: Props) {
       cleanupSprites();
       viewport.removeChildren();
     };
-  }, [app, viewport, mapSize]);
+  }, [mapSize, setSpriteArr]);
 
   return {
     spriteArr,

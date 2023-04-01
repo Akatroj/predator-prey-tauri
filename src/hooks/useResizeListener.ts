@@ -45,5 +45,5 @@ export function useResizeListeners<T extends HTMLElement>(
     return () => {
       window.removeEventListener('resize', callback);
     };
-  }, [target, spriteArr, mapSize]);
+  }, [target, spriteArr, mapSize, app.renderer, viewport]);
 }
