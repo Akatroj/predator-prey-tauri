@@ -7,20 +7,14 @@ import SimulationMapComponent from '@/components/SimulationMap';
 import type { MapEntity, SimulationMap } from '@/types';
 import { init2DArray } from '@/utils';
 
+import SimulationWorker from '../../workers/simulation.worker?worker';
+
 import styles from './Layout.module.scss';
-
-function getMap() {
-  const size = 100;
-  const possibleElems: MapEntity[] = ['', 'G', 'K', 'W'];
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return init2DArray(size, _ => sample(possibleElems)!);
-}
 
 type ChartData = {
   labels: number[];
-  sinX: number[];
-  cosX: number[];
+  predators: number[];
+  prey: number[];
 };
 
 let i = 0;
@@ -29,28 +23,36 @@ const Layout = () => {
   const map = useRef<SimulationMap>();
   const [chartData, setChartData] = useState<ChartData>({
     labels: [],
-    sinX: [],
-    cosX: [],
+    predators: [],
+    prey: [],
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      map.current = getMap();
-      setChartData(prev => {
-        // performance > immutability
-        prev.labels.push(round(i, 2));
-        prev.sinX.push(Math.sin(i));
-        prev.cosX.push(Math.cos(i));
+    const worker = new SimulationWorker();
+    worker.postMessage('init');
 
-        return {
-          ...prev,
-        };
-      });
-      i += 0.01;
-    }, 30);
+    const interval = setInterval(() => worker.postMessage('step'), 30);
 
+    worker.onmessage = event => {
+      if (event.data.type === 'frame') {
+        const [array, [grass, predators, prey], currentStep] = event.data.payload;
+
+        map.current = array;
+        setChartData(prev => {
+          // performance > immutability
+          prev.labels.push(currentStep);
+          prev.predators.push(predators);
+          prev.prey.push(prey);
+
+          return {
+            ...prev,
+          };
+        });
+      }
+    };
     return () => {
       clearInterval(interval);
+      worker.terminate();
     };
   }, []);
 
@@ -58,7 +60,11 @@ const Layout = () => {
     <div className={styles.container}>
       <div className={styles.leftPane}>
         <SimulationMapComponent map={map} />
-        <Graph labels={chartData.labels} sinX={chartData.sinX} cosX={chartData.cosX} />
+        <Graph
+          labels={chartData.labels}
+          predators={chartData.predators}
+          prey={chartData.prey}
+        />
       </div>
       <Menu />
     </div>

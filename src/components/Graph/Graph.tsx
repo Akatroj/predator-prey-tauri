@@ -6,30 +6,30 @@ import styles from './Graph.module.scss';
 
 type Props = {
   labels: number[];
-  sinX: number[];
-  cosX: number[];
+  predators: number[];
+  prey: number[];
 };
 
 // ChartData<'line', Data, 'sinx' | 'cosx'>
 type Data = number[];
 type Labels = number;
 
-const Graph = ({ labels, sinX, cosX }: Props) => {
+const Graph = ({ labels, predators, prey }: Props) => {
   const data = useMemo<ChartData<'line', Data, Labels>>(
     () => ({
       labels,
       datasets: [
         {
-          label: 'sin x',
-          data: sinX,
+          label: 'predators',
+          data: predators,
         },
         {
-          label: 'cos x',
-          data: cosX,
+          label: 'prey',
+          data: prey,
         },
       ],
     }),
-    [labels, sinX, cosX],
+    [labels, predators, prey],
   );
 
   return (

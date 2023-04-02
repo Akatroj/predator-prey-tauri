@@ -37,7 +37,9 @@ class SimulationClass:
 
         self.entity_list = [self.prey_list, self.predator_list]
 
-    def initialize_simulation(self, grass_coverage=20, predator_count=20, prey_count=100):
+    def initialize_simulation(
+        self, grass_coverage=20, predator_count=20, prey_count=100
+    ):
         self.generate_new_grass(grass_per_cent_per_row=grass_coverage)
         # self.generate_new_predators(predator_count=predator_count)
         # self.generate_new_prey(prey_count=prey_count)
@@ -47,39 +49,74 @@ class SimulationClass:
 
     def generate_new_grass(self, grass_per_cent_per_row=20):
         for i in range(self.map_size_x):
-            grass_x = random.sample(range(0, self.map_size_x), int(grass_per_cent_per_row * (self.map_size_y / 100)))
+            grass_x = random.sample(
+                range(0, self.map_size_x),
+                int(grass_per_cent_per_row * (self.map_size_y / 100)),
+            )
             for x in grass_x:
                 self.grass_matrix[x, i] = 1
 
     def generate_new_predators(self, predator_count=20):
         for i in range(predator_count):
-            self.predator_list.append(Entity(map_informer=self.map_informer, entity_name="predator"))
+            self.predator_list.append(
+                Entity(map_informer=self.map_informer, entity_name="predator")
+            )
 
     def generate_new_prey(self, prey_count=20):
         for i in range(prey_count):
-            self.prey_list.append(Entity(map_informer=self.map_informer, entity_name="prey"))
+            self.prey_list.append(
+                Entity(map_informer=self.map_informer, entity_name="prey")
+            )
 
     def update_simulation(self):
         # !TODO predator first, prey_second, then grass
-        print(f'Current step: {self.current_step}')
-        [prey.update_entity() for prey in self.prey_list]  # let entities perform actions
+        print(f"Current step: {self.current_step}")
+        [
+            prey.update_entity() for prey in self.prey_list
+        ]  # let entities perform actions
         random.shuffle(self.prey_list)  # shuffle before next step
-        [prey.update_for_next_epoch() for prey in self.prey_list]  # get prey ready for next step
-        self.prey_list = [prey for prey in self.prey_list if prey.energy > 0]  # death by starvation
+        [
+            prey.update_for_next_epoch() for prey in self.prey_list
+        ]  # get prey ready for next step
+        self.prey_list = [
+            prey for prey in self.prey_list if prey.energy > 0
+        ]  # death by starvation
 
-        [predator.update_entity() for predator in self.predator_list]  # let entities perform actions
+        [
+            predator.update_entity() for predator in self.predator_list
+        ]  # let entities perform actions
         random.shuffle(self.predator_list)  # shuffle before next step
-        [predator.update_for_next_epoch() for predator in self.predator_list]  # get prey ready for next step
-        self.predator_list = [predator for predator in self.predator_list if predator.energy > 0]  # death by starvation
+        [
+            predator.update_for_next_epoch() for predator in self.predator_list
+        ]  # get prey ready for next step
+        self.predator_list = [
+            predator for predator in self.predator_list if predator.energy > 0
+        ]  # death by starvation
 
         self.current_step += 1
 
     def build_frame(self):
-        data = {}
-        for row in range(self.GlobalConfig.map_size_x):
-            for column in range(self.GlobalConfig.map_size_y):
-                if self.grass_matrix[row, column] == 1:
-                    data[row] = column  # !TODO parsing a list of 1's
+        data = [
+            [""] * self.GlobalConfig.map_size_y
+            for _ in range(self.GlobalConfig.map_size_x)
+        ]
+        grass, predators, preys = 0, 0, 0
+
+        for y, row in enumerate(self.grass_matrix):
+            for x, el in enumerate(row):
+                if el == 1:
+                    data[y][x] = "Grass"
+                    grass += 1
+
+        for predator in self.predator_list:
+            data[predator.position_y][predator.position_x] = "Predator"
+            predators += 1
+
+        for prey in self.prey_list:
+            data[prey.position_y][prey.position_x] = "Prey"
+            preys += 1
+
+        return list(data), [grass, predators, preys], self.current_step
 
     def get_frame(self):
         return self.build_frame()

@@ -13,11 +13,11 @@ export function getTexture(el: MapEntity): Texture {
   switch (el) {
     case '':
       return Texture.EMPTY;
-    case 'G':
+    case 'Grass':
       return grass;
-    case 'K':
+    case 'Prey':
       return chicken;
-    case 'W':
+    case 'Predator':
       return wolf;
   }
 }
@@ -26,11 +26,11 @@ export function getTintAndVisibility(el: MapEntity): [number, boolean] {
   switch (el) {
     case '':
       return [0xffffff, false];
-    case 'G':
+    case 'Grass':
       return [0x00ff00, true];
-    case 'K':
+    case 'Prey':
       return [0xffff00, true];
-    case 'W':
+    case 'Predator':
       return [0xff0000, true];
   }
 }

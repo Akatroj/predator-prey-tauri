@@ -26,8 +26,6 @@ export function initializeSpriteArray(
     return sprite;
   });
 
-  console.log(spriteArr);
-
   const cleanupSprites = () =>
     forEach2D(spriteArr, sprite => {
       sprite.destroy();
