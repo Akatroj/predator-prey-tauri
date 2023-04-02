@@ -2,6 +2,7 @@ import pygame
 import simulation_class
 import numpy as np
 import time
+import sys
 from utilities import Config
 
 pygame.init()
@@ -54,3 +55,13 @@ class FrontEnd:
         self.update_predators()
         self.update_prey()
         pygame.display.flip()
+
+    def handle_event(self, event: pygame.event):
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    def update(self):
+        for event in pygame.event.get():
+            self.handle_event(event)
+        self.update_screen()
