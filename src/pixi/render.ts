@@ -19,7 +19,7 @@ export const onZoom = (currentZoom: number) => {
 
 const updateDetailedSprites = (map: SimulationMap, spriteArr: SpriteArray) => {
   forEach2D(spriteArr, (el, x, y) => {
-    el.tint = 0xffffff; // ??
+    el.tint = 0xffffff; // remove tint
     el.texture = getTexture(map[y][x]);
     el.visible = true;
   });
@@ -28,7 +28,7 @@ const updateDetailedSprites = (map: SimulationMap, spriteArr: SpriteArray) => {
 const updateSmallSprites = (map: SimulationMap, spriteArr: SpriteArray) => {
   forEach2D(spriteArr, (el, x, y) => {
     el.texture = Texture.WHITE;
-    const [tint, visible] = getTintAndVisibility(map[x][y]);
+    const [tint, visible] = getTintAndVisibility(map[y][x]);
     el.tint = tint;
     el.visible = visible;
   });
