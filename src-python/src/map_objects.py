@@ -5,6 +5,7 @@ import numpy as np
 import copy
 from math import floor
 
+
 class Entity:
     """
     The entity is a base type of agent in a system.
@@ -28,7 +29,7 @@ class Entity:
     """
 
     def __init__(self, map_informer: MapInformer, global_config, sim_ref, entity_name="template",
-                 starting_energy=1000, max_energy=1000,
+                 starting_energy=500, max_energy=750,
                  diet="", generation=0,
                  phenotype=None,
                  thresholds=None):
@@ -57,7 +58,7 @@ class Entity:
         self.generation = generation
         if phenotype is None:
             self.phenotype = {"grass_find_range": 5, "prey_find_range": 2, "random_movement_range": 2,
-                              "grass_consumption_energy_gain": 50*5,
+                              "grass_consumption_energy_gain": 50*4,
                               "animal_consumption_energy_gain": 750}
         else:
             self.phenotype = phenotype
@@ -261,6 +262,8 @@ class Multiply(Action):
         if self.parent_entity.thresholds["Mating"] < self.parent_entity.energy:
             self.parent_entity.possible_actions_per_epoch = 0
             self.parent_entity.energy = int(floor(self.parent_entity.energy/2.1))
+
+            #  TODO add mutation to reproduction and describe it
 
             new_entity = Entity(
                 map_informer=self.parent_entity.map_informer,
