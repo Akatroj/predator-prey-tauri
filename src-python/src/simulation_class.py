@@ -92,7 +92,10 @@ class SimulationClass:
         self.predator_list = [
             predator for predator in self.predator_list if predator.energy > 0
         ]  # death by starvation
+        print(f"Total amount of energy in prey:     {sum([prey.energy for prey in self.prey_list])}")
+        print(f"Total amount of energy in predators:{sum([predator.energy for predator in self.predator_list])}\n")
 
+        self.generate_new_grass(grass_per_cent_per_row=1)
         self.current_step += 1
 
     def build_frame(self):

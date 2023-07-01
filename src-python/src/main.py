@@ -13,7 +13,7 @@ def init_simulation(config=GlobalConfig):
     entity_generator = EntityGenerator(global_config=GlobalConfig)
     simulation = sim.SimulationClass(entity_generator, global_config=GlobalConfig)
     simulation.initialize_simulation(
-        grass_coverage=25, predator_count=20, prey_count=200
+        grass_coverage=30, predator_count=20, prey_count=100
     )  # grass coverage [%]
 
 
@@ -29,7 +29,7 @@ def main():
     front_end = front.FrontEnd(simulation)
 
     while True:
-        simulation.update()
+        simulation.update_simulation()
         front_end.update_screen()
         time.sleep(0.1)
 

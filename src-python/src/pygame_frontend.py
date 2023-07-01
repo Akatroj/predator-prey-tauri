@@ -26,7 +26,7 @@ class FrontEnd:
 
     def update_grass(self):
         grass_matrix = self.simulation.grass_matrix
-        print(np.sum(grass_matrix))
+        # print(np.sum(grass_matrix))
         i, j = np.where(grass_matrix == 1)
         for k in range(len(i)):
             pygame.draw.rect(self.screen, self.config.grass_color,
