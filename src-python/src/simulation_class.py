@@ -119,7 +119,7 @@ class SimulationClass:
             data[prey.position_y][prey.position_x] = "Prey"
             preys += 1
 
-        param_name, prey_value, predator_value= self.get_tested_param()
+        param_name, prey_value, predator_value= self.get_tested_params()
         return list(data), [grass, predators, preys], self.current_step, param_name, [predator_value, prey_value]
 
     def get_tested_params(self):

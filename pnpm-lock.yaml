@@ -20,8 +20,10 @@ specifiers:
   '@pixi/text-bitmap': ^7.2.3
   '@pixi/ticker': ^7.2.3
   '@pixi/utils': ^7.2.3
+  '@popperjs/core': ^2.11.8
   '@tauri-apps/api': ^1.2.0
   '@tauri-apps/cli': ^1.2.3
+  '@types/file-saver': ^2.0.5
   '@types/lodash-es': ^4.17.7
   '@types/node': ^18.15.11
   '@types/react': ^18.0.31
@@ -41,6 +43,7 @@ specifiers:
   eslint-plugin-react-hooks: ^4.6.0
   eslint-plugin-simple-import-sort: ^10.0.0
   eslint-plugin-unused-imports: ^2.0.0
+  file-saver: ^2.0.5
   lodash-es: ^4.17.21
   npm-watch: ^0.11.0
   pixi-viewport: ^5.0.1
@@ -81,9 +84,11 @@ dependencies:
   '@pixi/text-bitmap': 7.2.3_5kks4jwjuvbktiujay4jwgengi
   '@pixi/ticker': 7.2.3
   '@pixi/utils': 7.2.3
+  '@popperjs/core': 2.11.8
   '@tauri-apps/api': 1.2.0
-  bootstrap: 5.3.0
+  bootstrap: 5.3.0_@popperjs+core@2.11.8
   chart.js: 4.2.1
+  file-saver: 2.0.5
   lodash-es: 4.17.21
   pixi-viewport: 5.0.1
   primeicons: 6.0.1
@@ -99,6 +104,7 @@ dependencies:
 
 devDependencies:
   '@tauri-apps/cli': 1.2.3
+  '@types/file-saver': 2.0.5
   '@types/lodash-es': 4.17.7
   '@types/node': 18.15.11
   '@types/react': 18.0.31
@@ -1055,6 +1061,10 @@ packages:
     resolution: {integrity: sha512-w8oigUCDjElRHRRrMvn/spybSMyX8MTkKA5Dv+tS1IE/TgmNZPqUYtvYBXGY8cieSE66gm+szeK+bnbxC2xHTQ==}
     dev: false
 
+  /@types/file-saver/2.0.5:
+    resolution: {integrity: sha512-zv9kNf3keYegP5oThGLaPk8E081DFDuwfqjtiTzm6PoxChdJ1raSuADf2YGCVIyrSynLrgc8JWv296s7Q7pQSQ==}
+    dev: true
+
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
@@ -1446,10 +1456,12 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  /bootstrap/5.3.0:
+  /bootstrap/5.3.0_@popperjs+core@2.11.8:
     resolution: {integrity: sha512-UnBV3E3v4STVNQdms6jSGO2CvOkjUMdDAVR2V5N4uCMdaIkaQjbcEAMqRimDHIs4uqBYzDAKCQwCB+97tJgHQw==}
     peerDependencies:
       '@popperjs/core': ^2.11.7
+    dependencies:
+      '@popperjs/core': 2.11.8
     dev: false
 
   /brace-expansion/1.1.11:
@@ -2194,6 +2206,10 @@ packages:
     dependencies:
       flat-cache: 3.0.4
     dev: true
+
+  /file-saver/2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
+    dev: false
 
   /fill-range/7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}

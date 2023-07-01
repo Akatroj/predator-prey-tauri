@@ -10,41 +10,54 @@ import { useConfigStore } from '@/store';
 import { useSimulationWorker } from '@/hooks/useServiceWorker';
 
 import { useInterval } from 'usehooks-ts';
-import { round } from 'lodash-es';
+import { INTERVAL_DURATION_MS } from '@/utils';
+import type { GraphRefType } from '@/components/Graph/Graph';
 
-type ChartData = {
-  labels: number[];
+export type SimulationData = {
   predators: number[];
   prey: number[];
 };
 
-let i = 0;
+export type GraphData = {
+  labels: number[];
+  population: SimulationData;
+  energy: SimulationData;
+};
+
+// let i = 0;
 
 const Layout = () => {
+  const i = useRef<number>(0);
+
   const map = useRef<SimulationMap>();
-  const [chartData, setChartData] = useState<ChartData>({
+  const graph = useRef<GraphRefType>(null);
+  const [chartData, setChartData] = useState<GraphData>({
     labels: [],
-    predators: [],
-    prey: [],
+    population: {
+      predators: [],
+      prey: [],
+    },
+    energy: {
+      predators: [],
+      prey: [],
+    },
   });
 
   const running = useConfigStore(state => state.running);
 
   const onMessage = useCallback((event: any) => {
     if (event.data.type === 'frame') {
-      const [array, [grass, predators, prey], currentStep] = event.data.payload;
+      const [array, [grass, predators, prey], currentStep, , [predatorEnergy, preyEnergy]] =
+        event.data.payload;
 
       map.current = array;
       setChartData(prev => {
         // performance > immutability
         prev.labels.push(currentStep);
-        // prev.predators.push(predators);
-        // prev.prey.push(prey);
-
-        prev.predators.push(100 * Math.abs(Math.sin(i)));
-        prev.prey.push(100 * Math.abs(Math.cos(i)));
-
-        i += 0.001;
+        prev.population.predators.push(predators);
+        prev.population.prey.push(prey);
+        prev.energy.predators.push(predatorEnergy);
+        prev.energy.prey.push(preyEnergy);
 
         return {
           ...prev,
@@ -57,8 +70,12 @@ const Layout = () => {
 
   useInterval(() => {
     if (!ready || !running) return;
+    if (i.current === 500) return;
+
     worker?.postMessage({ type: 'step' });
-  }, 30);
+
+    i.current++;
+  }, INTERVAL_DURATION_MS);
 
   const restart = useCallback(
     (config: Config) => {
@@ -67,17 +84,30 @@ const Layout = () => {
     [worker],
   );
 
+  const saveGraph = useCallback(() => {
+    graph.current?.save();
+  }, []);
+
+  const showMap = useConfigStore(state => state.showMap);
+
   return (
     <div className={styles.container}>
       <div className={styles.leftPane}>
-        {ready ? <SimulationMapComponent map={map} /> : <span>Loading...</span>}
+        {!showMap ? (
+          <div style={{ height: document.body.clientHeight, aspectRatio: 1 }}></div>
+        ) : ready ? (
+          <SimulationMapComponent map={map} />
+        ) : (
+          <span>Loading...</span>
+        )}
         <Graph
+          ref={graph}
           labels={chartData.labels}
-          predators={chartData.predators}
-          prey={chartData.prey}
+          population={chartData.population}
+          energy={chartData.energy}
         />
       </div>
-      <Menu restart={restart} />
+      <Menu restart={restart} save={saveGraph} />
     </div>
   );
 };
