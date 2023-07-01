@@ -48,7 +48,9 @@ class Entity:
         self.max_energy = max_energy
         self.maslov_pyramid = {'Physiological': 0, 'Safety': 1, 'Mating': 2}  # lower number == higher priority
         if thresholds is None:
-            self.thresholds = {'Physiological': max_energy * 0.5, 'Safety': max_energy * 0.7, 'Mating': max_energy * 0.9}
+            self.thresholds = {'Physiological': max_energy * 0.5,
+                               'Safety': max_energy * 0.7,
+                               'Mating': max_energy * 0.9}
         else:
             self.thresholds = thresholds
         self.diet = diet

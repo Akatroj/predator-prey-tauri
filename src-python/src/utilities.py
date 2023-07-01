@@ -10,8 +10,8 @@ class Config:
         self.starting_predators = 10
 
         self.cell_size = 10
-        self.map_size_x = 100
-        self.map_size_y = 100
+        self.map_size_x = 200
+        self.map_size_y = 200
         self.map_max_index_x = self.map_size_x - 1
         self.map_max_index_y = self.map_size_y - 1
         self.SimulationMapSettings = {"cell_size": self.cell_size,
