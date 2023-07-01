@@ -3,6 +3,7 @@ import simulation_class as sim
 from entity_factory import EntityGenerator
 from utilities import Config
 
+
 GlobalConfig = Config(entity_gen_seed=222)
 
 entity_generator, simulation = None, None
@@ -28,11 +29,13 @@ def main():
 
     front_end = front.FrontEnd(simulation)
 
-    while True:
-        simulation.update()
-        front_end.update_screen()
-        time.sleep(0.1)
+    time.sleep(0.1)
 
+    while True:
+        simulation.update_simulation()
+        front_end.update_screen()
+
+    time.sleep(0.1)
 
 if __name__ == "__main__":
     main()

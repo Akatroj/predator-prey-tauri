@@ -2,6 +2,7 @@ import random
 from utilities import Config
 from map_informer import MapInformer
 import numpy as np
+from copy import copy
 
 
 class Entity:
@@ -37,11 +38,16 @@ class Entity:
         self.position_x = random.randint(0, self.GlobalConfig.map_max_index_x)
         self.position_y = random.randint(0, self.GlobalConfig.map_max_index_y)
         self.name = entity_name
+
+        # IMPORTANT this will determine the behavior of the animal
         self.actions_to_perform = []
+        #self.actions_to_perform.append(Multiply(self))
         self.actions_to_perform.append(FindFood(self))
         self.actions_to_perform.append(RandomMovement(self))
         self.energy = starting_energy
         self.max_energy = max_energy
+
+        # IMPORTANT Entity update scheme
         self.maslov_pyramid = {'Physiological': 0, 'Safety': 1, 'Mating': 2}  # lower number == higher priority
 
         self.thresholds = {'Physiological': max_energy * 0.5, 'Safety': max_energy * 0.7, 'Mating': max_energy * 0.9}
@@ -85,10 +91,10 @@ class Entity:
         if self.energy > self.max_energy:
             self.energy = self.max_energy
         self.sim_ref.grass_matrix[self.position_x, self.position_y] = 0
-        print(np.sum(self.sim_ref.grass_matrix))
+        print('Total grass energy in the system:{}\n'.format(np.sum(self.sim_ref.grass_matrix)))
 
-    def update_for_next_epoch(self):
-        self.possible_actions_per_epoch = self.max_actions_per_epoch
+    def update_for_next_epoch(self):  # Reset number of actions
+        self.possible_actions_per_epoch = self.GlobalConfig.entity_settings["actions_per_epoch"]
 
 
 class MovementGene:
@@ -159,6 +165,19 @@ class RunAwayFromPredator(Action):
     def update_action(self):
         if self.parent_entity.diet == "herbivore":
             self.parent_entity.find_nearest_predator()
+
+
+class Multiply(Action):
+    def __init__(self, parent_entity):
+        Action.__init__(self, parent_entity)
+
+    def update_action(self):
+        if self.parent_entity.thresholds["Mating"] < self.parent_entity.energy:
+            self.parent_entity.energy = self.parent_entity.energy/2
+            new_entity = copy(self.parent_entity)
+            new_entity.possible_actions_per_epoch = 0
+            self.parent_entity.sim_ref.predator_list.append(new_entity)
+            self.parent_entity.possible_actions_per_epoch = 0
 
 
 class FindFood(Action):

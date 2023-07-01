@@ -36,3 +36,7 @@ class Config:
             print(f"Using provided seed: {self.entity_gen_seed}")
 
         self.EntityFactorySettings = {"entity_gen_seed": self.entity_gen_seed}
+
+        self.entity_settings = {
+            "actions_per_epoch": 2
+        }
