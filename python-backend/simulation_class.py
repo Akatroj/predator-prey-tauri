@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from utilities import Config
-from map_objects import Entity
+from map_objects_legacy import Entity
 from map_informer import MapInformer
 from entity_factory import EntityGenerator
 import json
@@ -62,12 +62,12 @@ class SimulationClass:
     def update_simulation(self):
         # !TODO predator first, prey_second, then grass
         print(f'Current step: {self.current_step}')
-        [prey.update_entity() for prey in self.prey_list]  # let entities perform actions
+        [prey.run_update_actions() for prey in self.prey_list]  # let entities perform actions
         random.shuffle(self.prey_list)  # shuffle before next step
         [prey.update_for_next_epoch() for prey in self.prey_list]  # get prey ready for next step
         self.prey_list = [prey for prey in self.prey_list if prey.energy > 0]  # death by starvation
 
-        [predator.update_entity() for predator in self.predator_list]  # let entities perform actions
+        [predator.run_update_actions() for predator in self.predator_list]  # let entities perform actions
         random.shuffle(self.predator_list)  # shuffle before next step
         [predator.update_for_next_epoch() for predator in self.predator_list]  # get prey ready for next step
         self.predator_list = [predator for predator in self.predator_list if predator.energy > 0]  # death by starvation

@@ -1,7 +1,7 @@
-import map_objects
+import map_objects_legacy
 import random
 from utilities import Config
-from map_objects import Entity
+from map_objects_legacy import Entity
 import sys
 
 

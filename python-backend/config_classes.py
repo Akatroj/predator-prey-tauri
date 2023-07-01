@@ -1,14 +1,14 @@
 from dataclasses import dataclass
+
 position_datatype: type = int
 
-
-
+@dataclass
 class InitPopConfig:
-    def __init__(self):
-        self.n_predators = 100
-        self.n_prey = 300
-        self.n_grass = 900
-        self.available_traits = ["Sight", "Speed", "Fertility", "Metabolic rate"]
+    n_predators: int = 100
+    n_prey: int = 300
+    n_grass: int = 900
+    n_total = n_prey + n_predators + n_grass
+    available_traits = ["Sight", "Speed", "Fertility", "Metabolic rate"]
 
 
 class PossibleDiets:
@@ -32,16 +32,18 @@ class UISettings:
                                "grass_color": grass_color,
                                "predator_color": predator_color,
                                "prey_color": prey_color}
+
+
 class OmnivoreSettings:
-    pass
+    starting_energy: int = 100
 
 
 class HerbivoreSettings:
-    pass
+    starting_energy: int = 100
 
 
 class CarnivoreSettings:
-    pass
+    starting_energy: int = 100
 
 
 class AnimalSettings:
@@ -66,6 +68,7 @@ class Settings:
     This class is going to be a collection of all setting classes,
     and will allow for global setting manipulation
     """
+
     def __init__(self):
         self.InitPopConfig = InitPopConfig
         self.MapSettings = MapSettings

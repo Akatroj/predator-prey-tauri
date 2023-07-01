@@ -17,7 +17,7 @@ class Config:
         self.SimulationMapSettings = {"cell_size": self.cell_size,
                                       "map_size_x": self.map_size_x,
                                       "map_size_y": self.map_size_y}
-
+        # UI SETTINGS
         self.bg_color = (141, 227, 75)
         self.grass_color = (19, 138, 39)
         self.predator_color = (255, 0, 0)
@@ -26,6 +26,7 @@ class Config:
                                         "grass_color": self.grass_color,
                                         "predator_color": self.predator_color,
                                         "prey_color": self.prey_color}
+        # SEED SETTINGS
         self.max_seed_value = 2048
 
         if entity_gen_seed is None:
@@ -36,3 +37,6 @@ class Config:
             print(f"Using provided seed: {self.entity_gen_seed}")
 
         self.EntityFactorySettings = {"entity_gen_seed": self.entity_gen_seed}
+
+        # GENETIC ALGORITHM SETTINGS:
+        self.possible_alleles = ["A", "C", "T", "G"]

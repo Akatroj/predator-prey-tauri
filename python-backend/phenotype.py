@@ -5,7 +5,7 @@ class Phenotype:
 
     def update_phenotype_from_genotype(self, genotype):
         for trait in self.traits:
-
+            trait.perform_action()
 
 
 class Trait:
