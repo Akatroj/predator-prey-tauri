@@ -8,7 +8,6 @@ class Config:
 
         self.starting_prey = 100
         self.starting_predators = 10
-        self.starting_grass = 200 * self.starting_prey
 
         self.cell_size = 10
         self.map_size_x = 200
@@ -42,4 +41,7 @@ class Config:
 
         self.EntityFactorySettings = {"entity_gen_seed": self.entity_gen_seed}
 
-        self.entity_settings = {"entity_energy_movement": int(50)}
+        self.entity_settings = {
+            "predator_energy_movement": int(50),
+            "prey_energy_movement": int(50),
+        }

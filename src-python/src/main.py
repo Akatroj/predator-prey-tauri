@@ -13,7 +13,7 @@ def init_simulation(config=GlobalConfig):
     entity_generator = EntityGenerator(global_config=GlobalConfig)
     simulation = sim.SimulationClass(entity_generator, global_config=GlobalConfig)
     simulation.initialize_simulation(
-        grass_coverage=10, predator_count=20, prey_count=100
+        grass_coverage=30, predator_count=20, prey_count=100
     )  # grass coverage [%]
 
 

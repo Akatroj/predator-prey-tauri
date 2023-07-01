@@ -51,6 +51,7 @@ export const Menu = ({ restart, save }: Props) => {
 
   const dupa = handleSubmit(({ startingPrey, seed }) => {
     // TODO: send to worker
+    // mam nadzieje że nikt tego nie czyta, nie dokonczylismy projektu xdd
     console.log(startingPrey, seed);
   });
 
@@ -69,7 +70,7 @@ export const Menu = ({ restart, save }: Props) => {
           <InputSwitch checked={!showMap} onChange={() => setShowMap(!showMap)} />
           Hide map
         </label>
-        <Button onClick={save}>Save</Button>
+        <Button onClick={save}>Save graph</Button>
       </div>
       <Form className={styles.form} onSubmit={dupa}>
         <span>Changes require restarting simulation to take effect</span>

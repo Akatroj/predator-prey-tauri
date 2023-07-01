@@ -38,7 +38,7 @@ class SimulationClass:
         self.entity_list = [self.prey_list, self.predator_list]
 
     def initialize_simulation(
-        self, grass_coverage=20, predator_count=20, prey_count=100
+        self, grass_coverage, predator_count, prey_count
     ):
         self.generate_new_grass(grass_per_cent_per_row=grass_coverage)
         # self.generate_new_predators(predator_count=predator_count)
