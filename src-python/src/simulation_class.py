@@ -119,13 +119,14 @@ class SimulationClass:
             data[prey.position_y][prey.position_x] = "Prey"
             preys += 1
 
-        parameter_value, parameter_name = self.get_tested_param()
-        return list(data), [grass, predators, preys], self.current_step, [parameter_value, parameter_name]
+        param_name, prey_value, predator_value= self.get_tested_param()
+        return list(data), [grass, predators, preys], self.current_step, param_name, [predator_value, prey_value]
 
-    def get_tested_param(self):
-        param_name = "Total prey energy"
-        param_value = sum([prey.energy for prey in self.prey_list])
-        return param_value, param_name
+    def get_tested_params(self):
+        param_name = "Total energy"
+        prey_value = sum([entity.energy for entity in self.prey_list])
+        predator_value = sum([entity.energy for entity in self.predator_list])
+        return param_name, prey_value, predator_value
 
     def get_frame(self):
         return self.build_frame()
