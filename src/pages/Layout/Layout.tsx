@@ -1,15 +1,16 @@
 import { round, sample } from 'lodash-es';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Graph from '@/components/Graph';
 import Menu from '@/components/Menu';
 import SimulationMapComponent from '@/components/SimulationMap';
 import type { MapEntity, SimulationMap } from '@/types';
-import { init2DArray } from '@/utils';
-
-import SimulationWorker from '../../workers/simulation.worker?worker';
 
 import styles from './Layout.module.scss';
+import { useConfigStore } from '@/store';
+import { useSimulationWorker } from '@/hooks/useServiceWorker';
+
+import { useInterval } from 'usehooks-ts';
 
 type ChartData = {
   labels: number[];
@@ -27,46 +28,51 @@ const Layout = () => {
     prey: [],
   });
 
-  useEffect(() => {
-    const worker = new SimulationWorker();
-    worker.postMessage('init');
+  const running = useConfigStore(state => state.running);
 
-    const interval = setInterval(() => worker.postMessage('step'), 30);
+  const onMessage = useCallback((event: any) => {
+    if (event.data.type === 'frame') {
+      const [array, [grass, predators, prey], currentStep] = event.data.payload;
 
-    worker.onmessage = event => {
-      if (event.data.type === 'frame') {
-        const [array, [grass, predators, prey], currentStep] = event.data.payload;
+      map.current = array;
+      setChartData(prev => {
+        // performance > immutability
+        prev.labels.push(currentStep);
+        prev.predators.push(predators);
+        prev.prey.push(prey);
 
-        map.current = array;
-        setChartData(prev => {
-          // performance > immutability
-          prev.labels.push(currentStep);
-          prev.predators.push(predators);
-          prev.prey.push(prey);
-
-          return {
-            ...prev,
-          };
-        });
-      }
-    };
-    return () => {
-      clearInterval(interval);
-      worker.terminate();
-    };
+        return {
+          ...prev,
+        };
+      });
+    }
   }, []);
+
+  const [worker, ready] = useSimulationWorker(onMessage);
+
+  useInterval(() => {
+    if (!ready || !running) return;
+    worker?.postMessage({ type: 'step' });
+  }, 30);
+
+  const restart = useCallback(
+    (config: Config) => {
+      worker?.postMessage({ type: 'restart', payload: config });
+    },
+    [worker],
+  );
 
   return (
     <div className={styles.container}>
       <div className={styles.leftPane}>
-        <SimulationMapComponent map={map} />
+        {ready ? <SimulationMapComponent map={map} /> : <span>Loading...</span>}
         <Graph
           labels={chartData.labels}
           predators={chartData.predators}
           prey={chartData.prey}
         />
       </div>
-      <Menu />
+      <Menu restart={restart} />
     </div>
   );
 };

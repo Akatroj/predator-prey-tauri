@@ -9,6 +9,7 @@ async function loadPython() {
   await pyodide.loadPackage(['numpy']);
   pyodide.unpackArchive(await src, 'zip');
   const main = pyodide.pyimport('main');
+  self.postMessage({ type: 'ready' });
   return main;
 }
 
@@ -16,7 +17,7 @@ const pythonPromise = loadPython();
 
 self.onmessage = async event => {
   const python = await pythonPromise;
-  switch (event.data) {
+  switch (event.data.type) {
     case 'init':
       python.init_simulation();
       break;
@@ -27,7 +28,7 @@ self.onmessage = async event => {
         payload: frame.toJs(),
       });
       break;
+    case 'restart':
+      python.init_simulation(event.data.payload);
   }
 };
-
-export default () => {};

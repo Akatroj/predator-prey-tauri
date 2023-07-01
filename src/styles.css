@@ -17,6 +17,11 @@ body,
   box-sizing: border-box;
 }
 
+/* PrimeReact */
+body {
+  font-family: (--font-family);
+}
+
 /* DEBUG */
 
 div {

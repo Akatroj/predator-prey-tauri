@@ -3,4 +3,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-flow: column;
+}
+
+.form {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+
+  label {
+    display: flex;
+    align-items: center;
+  }
 }
