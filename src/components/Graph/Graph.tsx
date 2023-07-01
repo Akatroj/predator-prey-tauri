@@ -33,7 +33,7 @@ const Graph = ({ labels, predators, prey }: Props) => {
   );
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} id={'xd'}>
       <Line
         data={data}
         options={{

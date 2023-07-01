@@ -5,8 +5,13 @@ import { useConfigStore } from '@/store';
 
 import { useForm, Controller } from 'react-hook-form';
 
+import { Form } from 'react-bootstrap';
+import { Config } from '@/types';
+
 type FormProps = {
   startingPrey: number;
+  startingPredators: number;
+  startingGrass: number;
   seed: number;
 };
 
@@ -37,21 +42,42 @@ export const Menu = (props: Props) => {
           Simulation running
         </label>
       </div>
-      <form className={styles.form} onSubmit={dupa}>
+      <Form className={styles.form} onSubmit={dupa}>
         <span>Static settings - changes require restarting simulation to take effect</span>
-        <label>
-          <input type="number" {...register('startingPrey')} />
-          Starting prey
-        </label>
-        <label>
-          <input type="number" {...register('seed')} />
-          Seed
-        </label>
-        <select>
-          <option />
-        </select>
+        <Form.Group>
+          <Form.Label>Seed</Form.Label>
+          <Controller
+            control={control}
+            name="seed"
+            render={({ field }) => <Form.Control type="number" {...field} />}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Starting prey</Form.Label>
+          <Controller
+            control={control}
+            name="startingPrey"
+            render={({ field }) => <Form.Control type="number" {...field} />}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Starting predators</Form.Label>
+          <Controller
+            control={control}
+            name="startingPredators"
+            render={({ field }) => <Form.Control type="number" {...field} />}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Starting grass</Form.Label>
+          <Controller
+            control={control}
+            name="startingGrass"
+            render={({ field }) => <Form.Control type="number" {...field} />}
+          />
+        </Form.Group>
         <button type="submit">Restart</button>
-      </form>
+      </Form>
     </div>
   );
 };

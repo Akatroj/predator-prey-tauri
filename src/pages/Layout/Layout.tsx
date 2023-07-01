@@ -1,16 +1,16 @@
-import { round, sample } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Graph from '@/components/Graph';
 import Menu from '@/components/Menu';
 import SimulationMapComponent from '@/components/SimulationMap';
-import type { MapEntity, SimulationMap } from '@/types';
+import type { Config, SimulationMap } from '@/types';
 
 import styles from './Layout.module.scss';
 import { useConfigStore } from '@/store';
 import { useSimulationWorker } from '@/hooks/useServiceWorker';
 
 import { useInterval } from 'usehooks-ts';
+import { round } from 'lodash-es';
 
 type ChartData = {
   labels: number[];
@@ -38,8 +38,13 @@ const Layout = () => {
       setChartData(prev => {
         // performance > immutability
         prev.labels.push(currentStep);
-        prev.predators.push(predators);
-        prev.prey.push(prey);
+        // prev.predators.push(predators);
+        // prev.prey.push(prey);
+
+        prev.predators.push(100 * Math.abs(Math.sin(i)));
+        prev.prey.push(100 * Math.abs(Math.cos(i)));
+
+        i += 0.001;
 
         return {
           ...prev,
