@@ -29,7 +29,9 @@ class Entity:
 
     def __init__(self, map_informer: MapInformer, global_config, sim_ref, entity_name="template",
                  starting_energy=1000, max_energy=1000,
-                 diet="", generation=0):
+                 diet="", generation=0,
+                 phenotype=None,
+                 thresholds=None):
 
         # Entity position on a map. By default initialized as random.
         self.GlobalConfig = global_config
@@ -45,15 +47,18 @@ class Entity:
         self.energy = starting_energy
         self.max_energy = max_energy
         self.maslov_pyramid = {'Physiological': 0, 'Safety': 1, 'Mating': 2}  # lower number == higher priority
-
-        self.thresholds = {'Physiological': max_energy * 0.5, 'Safety': max_energy * 0.7, 'Mating': max_energy * 0.9}
-
+        if thresholds is None:
+            self.thresholds = {'Physiological': max_energy * 0.5, 'Safety': max_energy * 0.7, 'Mating': max_energy * 0.9}
+        else:
+            self.thresholds = thresholds
         self.diet = diet
         self.generation = generation
-
-        self.phenotype = {"grass_find_range": 5, "prey_find_range": 2, "random_movement_range": 4,
-                          "grass_consumption_energy_gain": 50,
-                          "animal_consumption_energy_gain": 250}
+        if phenotype is None:
+            self.phenotype = {"grass_find_range": 5, "prey_find_range": 2, "random_movement_range": 2,
+                              "grass_consumption_energy_gain": 50*5,
+                              "animal_consumption_energy_gain": 750}
+        else:
+            self.phenotype = phenotype
 
         self.possible_actions_per_epoch = 1
         self.max_actions_per_epoch = 1
