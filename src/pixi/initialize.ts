@@ -41,7 +41,7 @@ function initializeViewport(app: Application) {
   viewport
     .drag()
     .pinch()
-    .wheel()
+    .wheel({ trackpadPinch: true })
     .decelerate()
     .clampZoom({ minScale: MIN_ZOOM, maxScale: MAX_ZOOM })
     .clamp({ direction: 'all' });

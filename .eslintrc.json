@@ -30,6 +30,7 @@
     "react/prop-types": "off",
     "import/no-duplicates": "error",
     "import/export": "off",
+    "import/ignore": ["^http.*"],
     "import/no-named-as-default-member": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",

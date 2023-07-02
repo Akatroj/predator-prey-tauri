@@ -10,6 +10,8 @@ body,
 #root {
   height: 100vh;
   width: 100vw;
+
+  background-color: #cde5fd;
 }
 
 /* include border and padding in element width and height */
@@ -17,8 +19,7 @@ body,
   box-sizing: border-box;
 }
 
-/* DEBUG */
-
-div {
-  border: 1px solid red;
+/* PrimeReact */
+body {
+  font-family: (--font-family);
 }

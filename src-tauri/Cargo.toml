@@ -1,10 +1,10 @@
 [package]
 name = "predator-prey"
-version = "0.0.0"
+version = "0.0.1"
 description = "A Tauri App"
-authors = ["you"]
+authors = ["Akatroj", "PiotreG99"]
 license = ""
-repository = ""
+repository = "https://github.com/Akatroj/predator-prey-tauri"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,7 +13,6 @@ edition = "2021"
 tauri-build = { version = "1.2", features = [] }
 
 [dependencies]
-pyo3 = { version = "0.18.1", features = ["extension-module"] }
 
 tauri = { version = "1.2", features = ["shell-open"] }
 serde = { version = "1.0", features = ["derive"] }

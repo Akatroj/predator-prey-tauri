@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import FullReload from 'vite-plugin-full-reload';
 import path from 'path';
 
 const mobile =
@@ -13,7 +14,7 @@ export default defineConfig(async () => ({
     },
   },
 
-  plugins: [react()],
+  plugins: [react(), FullReload(['public/python.zip'])],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // prevent vite from obscuring rust errors

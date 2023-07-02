@@ -2,7 +2,8 @@ import random
 from utilities import Config
 from map_informer import MapInformer
 import numpy as np
-
+import copy
+from math import floor
 
 class Entity:
     """
@@ -38,6 +39,7 @@ class Entity:
         self.position_y = random.randint(0, self.GlobalConfig.map_max_index_y)
         self.name = entity_name
         self.actions_to_perform = []
+        self.actions_to_perform.append(Multiply(self))
         self.actions_to_perform.append(FindFood(self))
         self.actions_to_perform.append(RandomMovement(self))
         self.energy = starting_energy
@@ -49,7 +51,8 @@ class Entity:
         self.diet = diet
         self.generation = generation
 
-        self.phenotype = {"grass_find_range": 5, "random_movement_range": 4, "grass_consumption_energy_gain": 100,
+        self.phenotype = {"grass_find_range": 5, "prey_find_range": 2, "random_movement_range": 4,
+                          "grass_consumption_energy_gain": 50,
                           "animal_consumption_energy_gain": 250}
 
         self.possible_actions_per_epoch = 1
@@ -65,11 +68,13 @@ class Entity:
                     action.update_action()  # move entity to the desired position
                 else:
                     break
+        if self.energy > self.max_energy:
+            self.energy = self.max_energy
 
     def move_entity(self):
         self.position_x = self.next_position_x
         self.position_y = self.next_position_y
-        self.energy -= 10
+        self.energy -= self.GlobalConfig.entity_settings["entity_energy_movement"]
 
     def eat_grass(self):
         self.energy += self.phenotype["grass_consumption_energy_gain"]
@@ -77,7 +82,7 @@ class Entity:
         if self.energy > self.max_energy:
             self.energy = self.max_energy
         self.sim_ref.grass_matrix[self.position_x, self.position_y] = 0
-        print(np.sum(self.sim_ref.grass_matrix))
+        # print(np.sum(self.sim_ref.grass_matrix))
 
     def eat_other_entity(self):
         self.energy += self.phenotype["grass_consumption_energy_gain"]
@@ -85,7 +90,7 @@ class Entity:
         if self.energy > self.max_energy:
             self.energy = self.max_energy
         self.sim_ref.grass_matrix[self.position_x, self.position_y] = 0
-        print(np.sum(self.sim_ref.grass_matrix))
+        # print(np.sum(self.sim_ref.grass_matrix))
 
     def update_for_next_epoch(self):
         self.possible_actions_per_epoch = self.max_actions_per_epoch
@@ -168,6 +173,8 @@ class FindFood(Action):
     def update_action(self):
         if self.parent_entity.diet == "herbivore":
             self.find_nearest_grass()
+        elif self.parent_entity.diet == "carnivore":
+            self.find_nearest_prey()
 
     def find_nearest_grass(self):
         x_pos = self.parent_entity.position_x
@@ -199,3 +206,66 @@ class FindFood(Action):
             self.parent_entity.possible_actions_per_epoch -= 1  # The action has been performed
             self.parent_entity.move_entity()
             self.parent_entity.eat_grass()
+
+    def find_nearest_prey(self):
+        x_pos = self.parent_entity.position_x
+        y_pos = self.parent_entity.position_y
+        search_range_x = range(int(x_pos - self.parent_entity.phenotype["prey_find_range"]),
+                               int(x_pos + self.parent_entity.phenotype["prey_find_range"]),
+                               1)
+
+        search_range_y = range(int(y_pos - self.parent_entity.phenotype["prey_find_range"]),
+                               int(y_pos + self.parent_entity.phenotype["prey_find_range"]),
+                               1)
+
+        # Filter out out-of-range positions
+        search_range_x = [position for position in search_range_x
+                          if 0 < position < self.parent_entity.GlobalConfig.map_max_index_x]
+        search_range_y = [position for position in search_range_y
+                          if 0 < position < self.parent_entity.GlobalConfig.map_max_index_y]
+
+        closest_grass_x = -1
+        closest_grass_y = -1
+        prey_list_ref = self.parent_entity.sim_ref.prey_list
+
+        possible_prey = [prey_to_eat for prey_to_eat in prey_list_ref if prey_to_eat.position_x in search_range_x
+         and prey_to_eat.position_y in search_range_y
+        ]
+        if len(possible_prey) is not 0:
+            possible_prey.sort(key=lambda x: x.energy, reverse=False)
+            self.parent_entity.energy += floor(0.9 * possible_prey[0].energy)
+            # self.parent_entity.energy += 100
+
+            # Kill the other entity
+            possible_prey[0].energy = 0
+            possible_prey[0].possible_actions_per_epoch = 0
+
+            self.parent_entity.next_position_x = possible_prey[0].position_x
+            self.parent_entity.next_position_y = possible_prey[0].position_y
+            self.parent_entity.possible_actions_per_epoch -= 1  # The action has been performed
+            self.parent_entity.move_entity()
+
+
+class Multiply(Action):
+    def __init__(self, parent_entity):
+        Action.__init__(self, parent_entity)
+
+    def update_action(self):
+        if self.parent_entity.thresholds["Mating"] < self.parent_entity.energy:
+            self.parent_entity.possible_actions_per_epoch = 0
+            self.parent_entity.energy = int(floor(self.parent_entity.energy/2.1))
+
+            new_entity = Entity(
+                map_informer=self.parent_entity.map_informer,
+                global_config=self.parent_entity.GlobalConfig,
+                sim_ref=self.parent_entity.sim_ref,
+                entity_name=self.parent_entity.name,
+                starting_energy=self.parent_entity.energy,
+                diet=self.parent_entity.diet,
+                generation=self.parent_entity.generation + 1,
+            )
+
+            if new_entity.diet == "herbivore":
+                self.parent_entity.sim_ref.prey_list.append(new_entity)
+            else:
+                self.parent_entity.sim_ref.predator_list.append(new_entity)

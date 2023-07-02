@@ -30,17 +30,20 @@ export function useResizeListeners<T extends HTMLElement>(
     };
 
     const callback = debounce(() => {
-      const newCanvasSize = target.clientWidth;
-      app.renderer.resize(newCanvasSize, newCanvasSize);
+      const newCanvasWidth = document.body.clientWidth / 2;
+      const newCanvasHeight = document.body.clientHeight / 2;
+      app.renderer.resize(newCanvasWidth, newCanvasHeight);
 
-      const newSpriteSize = Math.ceil(newCanvasSize / mapSize);
+      const newSpriteSize = Math.ceil(Math.min(newCanvasWidth, newCanvasHeight) / mapSize);
       const newWorldSize = newSpriteSize * mapSize;
 
-      viewport.resize(newCanvasSize, newCanvasSize, newWorldSize, newWorldSize);
+      viewport.resize(newCanvasWidth, newCanvasHeight, newWorldSize, newWorldSize);
       resizeSprites(spriteArr, newSpriteSize);
     });
 
     window.addEventListener('resize', callback);
+
+    setTimeout(callback, 0);
 
     return () => {
       window.removeEventListener('resize', callback);

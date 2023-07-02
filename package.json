@@ -8,8 +8,20 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
+    "tauri-dev": "tauri dev",
+    "start": "concurrently npm:watch npm:tauri-dev --kill-others",
+    "watch": "npm-watch",
+    "zip-python": "cd src-python/src && bestzip ../../public/python.zip *",
     "lint": "eslint src/",
     "fix": "eslint src/ --fix && prettier --write src/"
+  },
+  "watch": {
+    "zip-python": {
+      "patterns": [
+        "src-python/src"
+      ],
+      "extensions": "py"
+    }
   },
   "dependencies": {
     "@pixi/app": "^7.2.3",
@@ -32,14 +44,20 @@
     "@pixi/ticker": "^7.2.3",
     "@pixi/utils": "^7.2.3",
     "@tauri-apps/api": "^1.2.0",
+    "bootstrap": "^5.3.0",
     "chart.js": "^4.2.1",
     "lodash-es": "^4.17.21",
     "pixi-viewport": "^5.0.1",
+    "primeicons": "^6.0.1",
+    "primereact": "^9.2.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
     "use-async-effect": "^2.2.7",
-    "usehooks-ts": "^2.9.1"
+    "usehooks-ts": "^2.9.1",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.3",
@@ -50,6 +68,8 @@
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "@vitejs/plugin-react": "^3.1.0",
+    "bestzip": "^2.2.1",
+    "concurrently": "^8.0.1",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.4",
@@ -58,9 +78,12 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "npm-watch": "^0.11.0",
     "prettier": "^2.8.7",
+    "pyodide": "^0.23.0",
     "sass": "^1.60.0",
     "typescript": "^5.0.3",
-    "vite": "^4.2.1"
+    "vite": "^4.2.1",
+    "vite-plugin-full-reload": "^1.0.5"
   }
 }

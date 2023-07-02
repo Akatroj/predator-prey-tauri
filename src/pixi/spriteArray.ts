@@ -13,6 +13,7 @@ export function initializeSpriteArray(
   stageSize = DEFAULT_STAGE_SIZE,
   mapSize = DEFAULT_MAP_SIZE,
 ): ReturnValue {
+  console.log('init');
   const spriteSize = Math.floor(stageSize / mapSize);
 
   const spriteArr = init2DArray<Sprite>(mapSize, (x, y) => {
@@ -25,8 +26,6 @@ export function initializeSpriteArray(
 
     return sprite;
   });
-
-  console.log(spriteArr);
 
   const cleanupSprites = () =>
     forEach2D(spriteArr, sprite => {
