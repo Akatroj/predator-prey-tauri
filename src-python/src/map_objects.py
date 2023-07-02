@@ -5,6 +5,7 @@ import numpy as np
 import copy
 from math import floor
 
+
 class Entity:
     """
     The entity is a base type of agent in a system.
@@ -28,8 +29,10 @@ class Entity:
     """
 
     def __init__(self, map_informer: MapInformer, global_config, sim_ref, entity_name="template",
-                 starting_energy=1000, max_energy=1000,
-                 diet="", generation=0):
+                 starting_energy=500, max_energy=750,
+                 diet="", generation=0,
+                 phenotype=None,
+                 thresholds=None):
 
         # Entity position on a map. By default initialized as random.
         self.GlobalConfig = global_config
@@ -45,15 +48,24 @@ class Entity:
         self.energy = starting_energy
         self.max_energy = max_energy
         self.maslov_pyramid = {'Physiological': 0, 'Safety': 1, 'Mating': 2}  # lower number == higher priority
-
-        self.thresholds = {'Physiological': max_energy * 0.5, 'Safety': max_energy * 0.7, 'Mating': max_energy * 0.9}
-
+        if thresholds is None:
+            self.thresholds = {'Physiological': max_energy * 0.5,
+                               'Safety': max_energy * 0.7,
+                               'Mating': max_energy * 0.9}
+        else:
+            self.thresholds = thresholds
         self.diet = diet
         self.generation = generation
-
-        self.phenotype = {"grass_find_range": 5, "prey_find_range": 2, "random_movement_range": 4,
-                          "grass_consumption_energy_gain": 50,
-                          "animal_consumption_energy_gain": 250}
+        if phenotype is None:
+            self.phenotype = {
+                "grass_find_range": 5,
+                "prey_find_range": 2,
+                "random_movement_range": 2,
+                "grass_consumption_energy_gain": 50*4,
+                "animal_consumption_energy_gain": 0.9
+                }
+        else:
+            self.phenotype = phenotype
 
         self.possible_actions_per_epoch = 1
         self.max_actions_per_epoch = 1
@@ -74,7 +86,7 @@ class Entity:
     def move_entity(self):
         self.position_x = self.next_position_x
         self.position_y = self.next_position_y
-        self.energy -= self.GlobalConfig.entity_settings["entity_energy_movement"]
+        self.energy -= self.GlobalConfig.entity_settings[f"{'predator' if self.diet != 'herbivore' else 'prey' }_energy_movement"]
 
     def eat_grass(self):
         self.energy += self.phenotype["grass_consumption_energy_gain"]
@@ -175,6 +187,11 @@ class FindFood(Action):
             self.find_nearest_grass()
         elif self.parent_entity.diet == "carnivore":
             self.find_nearest_prey()
+            
+    def calculate_distance(self, x1, y1,x2, y2):
+        point1 = np.array([x1, y1])
+        point2 = np.array([x2, y2])
+        return np.linalg.norm(point2 - point1)
 
     def find_nearest_grass(self):
         x_pos = self.parent_entity.position_x
@@ -188,19 +205,20 @@ class FindFood(Action):
                                1)
 
         search_range_x = [position for position in search_range_x
-                          if 0 <= position < self.parent_entity.GlobalConfig.map_max_index_x]
+                          if 0 <= position <= self.parent_entity.GlobalConfig.map_max_index_x]
         search_range_y = [position for position in search_range_y
-                          if 0 <= position < self.parent_entity.GlobalConfig.map_max_index_y]
+                          if 0 <= position <= self.parent_entity.GlobalConfig.map_max_index_y]
         closest_grass_x = -1
         closest_grass_y = -1
+        closest_grass_distance = 1_000_000
         for x_cord in search_range_x:
             for y_cord in search_range_y:
                 if self.parent_entity.map_informer.check_grass_grid(x_cord, y_cord):
-                    if abs(closest_grass_x - x_pos) > abs(x_cord - x_pos) \
-                            and abs(closest_grass_y - y_pos) > abs(y_cord - y_pos):
+                    if self.calculate_distance(x_cord, y_cord, x_pos, y_pos) < closest_grass_distance:
+                        closest_grass_distance = self.calculate_distance(x_cord, y_cord, x_pos, y_pos)
                         closest_grass_x = x_cord
                         closest_grass_y = y_cord
-        if closest_grass_x > 0:
+        if closest_grass_x >= 0:
             self.parent_entity.next_position_x = closest_grass_x
             self.parent_entity.next_position_y = closest_grass_y
             self.parent_entity.possible_actions_per_epoch -= 1  # The action has been performed
@@ -233,7 +251,7 @@ class FindFood(Action):
         ]
         if len(possible_prey) is not 0:
             possible_prey.sort(key=lambda x: x.energy, reverse=False)
-            self.parent_entity.energy += floor(0.9 * possible_prey[0].energy)
+            self.parent_entity.energy += floor(self.parent_entity.phenotype['animal_consumption_energy_gain'] * possible_prey[0].energy) # 90% of the energy of the prey
             # self.parent_entity.energy += 100
 
             # Kill the other entity
@@ -255,6 +273,8 @@ class Multiply(Action):
             self.parent_entity.possible_actions_per_epoch = 0
             self.parent_entity.energy = int(floor(self.parent_entity.energy/2.1))
 
+            #  TODO add mutation to reproduction and describe it
+
             new_entity = Entity(
                 map_informer=self.parent_entity.map_informer,
                 global_config=self.parent_entity.GlobalConfig,
@@ -263,6 +283,7 @@ class Multiply(Action):
                 starting_energy=self.parent_entity.energy,
                 diet=self.parent_entity.diet,
                 generation=self.parent_entity.generation + 1,
+                phenotype=self.parent_entity.phenotype
             )
 
             if new_entity.diet == "herbivore":

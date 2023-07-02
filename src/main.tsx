@@ -8,6 +8,7 @@ import {
   LineElement,
   PointElement,
   TimeScale,
+  Title,
 } from 'chart.js';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -30,6 +31,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
+  Title,
 );
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

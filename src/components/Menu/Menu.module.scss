@@ -2,18 +2,45 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   flex-flow: column;
+
+  padding: 10px;
 }
 
 .form {
-  flex: 1;
   display: flex;
   flex-flow: column;
   gap: 10px;
+
+  font-family: 'Roboto', sans-serif;
 
   label {
     display: flex;
     align-items: center;
   }
+
+  select::-ms-expand {
+    display: block;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.65em auto, 100%;
+  }
+}
+
+.switch {
+  display: flex;
+  gap: 10px;
+  // margin-bottom: 20px;
+}
+
+.disable {
+  @extend .switch;
 }

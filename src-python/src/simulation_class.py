@@ -38,7 +38,7 @@ class SimulationClass:
         self.entity_list = [self.prey_list, self.predator_list]
 
     def initialize_simulation(
-        self, grass_coverage=20, predator_count=20, prey_count=100
+        self, grass_coverage, predator_count, prey_count
     ):
         self.generate_new_grass(grass_per_cent_per_row=grass_coverage)
         # self.generate_new_predators(predator_count=predator_count)
@@ -119,7 +119,14 @@ class SimulationClass:
             data[prey.position_y][prey.position_x] = "Prey"
             preys += 1
 
-        return list(data), [grass, predators, preys], self.current_step
+        param_name, prey_value, predator_value= self.get_tested_params()
+        return list(data), [grass, predators, preys], self.current_step, param_name, [predator_value, prey_value]
+
+    def get_tested_params(self):
+        param_name = "Total energy"
+        prey_value = sum([entity.energy for entity in self.prey_list])
+        predator_value = sum([entity.energy for entity in self.predator_list])
+        return param_name, prey_value, predator_value
 
     def get_frame(self):
         return self.build_frame()

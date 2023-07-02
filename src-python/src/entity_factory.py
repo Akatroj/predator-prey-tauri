@@ -28,13 +28,37 @@ class EntityGenerator:
 
     def initialize_prey(self):  # initialize with empty references to simulation
         for i in range(self.n_prey):
-            self.starting_prey.append(Entity(entity_name=f"Prey_generation_{i}", diet="herbivore"
-                                             , map_informer=None, sim_ref=None, global_config=self.GlobalConfig))
+            self.starting_prey.append(
+                Entity(
+                    entity_name=f"Prey_generation_{i}",
+                    diet="herbivore",
+                    phenotype={
+                        "grass_find_range": 5,
+                        "random_movement_range": 2,
+                        "grass_consumption_energy_gain": 200,
+                    },
+                    map_informer=None,
+                    sim_ref=None,
+                    global_config=self.GlobalConfig,
+                )
+            )
 
-    def initialize_predators(self): # initialize with empty references to simulation
+    def initialize_predators(self):  # initialize with empty references to simulation
         for i in range(self.n_predators):
-            self.starting_predators.append(Entity(entity_name=f"Predator_generation_{i}", diet="carnivore"
-                                                  , map_informer=None, sim_ref=None, global_config=self.GlobalConfig))
+            self.starting_predators.append(
+                Entity(
+                    entity_name=f"Predator_generation_{i}",
+                    diet="carnivore",
+                    phenotype={
+                        "prey_find_range": 2,
+                        "random_movement_range": 2,
+                        "animal_consumption_energy_gain": 0.9,
+                    },
+                    map_informer=None,
+                    sim_ref=None,
+                    global_config=self.GlobalConfig,
+                )
+            )
 
     def restart_simulation(self):
         self.__init__(entity_gen_seed=self.entity_gen_seed)

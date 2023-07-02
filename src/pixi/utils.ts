@@ -27,7 +27,7 @@ export function getTintAndVisibility(el: MapEntity): [number, boolean] {
     case '':
       return [0xffffff, false];
     case 'Grass':
-      return [0x00ff00, true];
+      return [0x006400, true];
     case 'Prey':
       return [0xffff00, true];
     case 'Predator':
